@@ -1,5 +1,4 @@
 package idusw.springboot.boradthymleaf.controller;
 
-public class BoardController {
-
+public class ProductController {
 }
