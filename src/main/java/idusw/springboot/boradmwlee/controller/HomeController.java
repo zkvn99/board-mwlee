@@ -7,27 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/")
 public class HomeController {
+    /*
+    //Field Injection (필드 주입) : Spring Framework에게 MemoService형 객체를 주입해줄 것을 알림
     @Autowired
-    MemoService memoService;  // MemoService 인터페이스의 구현체를 필드 주입
-
-    @GetMapping
-    public String getHome() {
-        return "redirect:/admin";
-    }
-    @GetMapping("admin")
+    MemoService memoService;
+     */
+    // localhost:port로 요청을 하면 getAdmin() 메소드를 호출하여 처리하고,
+    // /admin/index view에게 전달
+    @GetMapping("/")
     public String getAdmin() {
-        System.out.println("getAdmin");
         return "/admin/index";
     }
-    @GetMapping("buttons") // 자원을 접근하는 개념 , /admin/buttons
-    public String getButtons() {
-        return "/admin/buttons";
-    }
 
-    @GetMapping("cards") // 자원을 접근하는 개념
-    public String getCards() {
-        return "/admin/cards";
-    }
 }

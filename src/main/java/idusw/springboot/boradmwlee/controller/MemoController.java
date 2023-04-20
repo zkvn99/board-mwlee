@@ -15,9 +15,8 @@ import java.util.List;
 @RequestMapping("/memo")
 // @RequestMapping("/api")
 public class MemoController {
-    // 생성자 주입 (Constructor DI)
+    // 생성자 주입 (Constructor DI) vs IoC 기법 중 하나가 DI, DL...
     MemoService memoService;
-
     public MemoController(MemoService memoService) {
         this.memoService = memoService;
     }

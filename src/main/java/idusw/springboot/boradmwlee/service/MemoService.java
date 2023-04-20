@@ -1,6 +1,7 @@
 package idusw.springboot.boradmwlee.service;
 
 import idusw.springboot.boradmwlee.domain.Memo;
+import idusw.springboot.boradmwlee.entity.MemberEntity;
 
 import java.util.List;
 
