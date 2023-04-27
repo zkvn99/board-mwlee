@@ -131,7 +131,7 @@
 
         <!-- Sidebar Message -->
         <div class="sidebar-card d-none d-lg-flex">
-            <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
+            <img class="sidebar-card-illustration mb-2" src="/img/undraw_rocket.svg" alt="...">
             <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
             <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
         </div>
@@ -159,10 +159,9 @@
                 </div>
             </div>
         </form>
-
+        <div th:if="${session.mb != null}">
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">
-
             <!-- Nav Item - Search Dropdown (Visible Only XS) -->
             <li class="nav-item dropdown no-arrow d-sm-none">
                 <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
@@ -254,7 +253,7 @@
                     </h6>
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="dropdown-list-image mr-3">
-                            <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                            <img class="rounded-circle" src="/img/undraw_profile_1.svg"
                                  alt="...">
                             <div class="status-indicator bg-success"></div>
                         </div>
@@ -266,7 +265,7 @@
                     </a>
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="dropdown-list-image mr-3">
-                            <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                            <img class="rounded-circle" src="/img/undraw_profile_2.svg"
                                  alt="...">
                             <div class="status-indicator"></div>
                         </div>
@@ -278,7 +277,7 @@
                     </a>
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="dropdown-list-image mr-3">
-                            <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                            <img class="rounded-circle" src="/img/undraw_profile_3.svg"
                                  alt="...">
                             <div class="status-indicator bg-warning"></div>
                         </div>
@@ -303,16 +302,14 @@
                     <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                 </div>
             </li>
-
             <div class="topbar-divider d-none d-sm-block"></div>
-
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                    <span th:text="${session.mb.name}" class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
                     <img class="img-profile rounded-circle"
-                         src="img/undraw_profile.svg">
+                         src="/img/undraw_profile.svg">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -334,11 +331,19 @@
                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         Logout
                     </a>
-                </div>
+                    </div>
             </li>
 
         </ul>
-
+        </div>
+            <div th:unless="${session.mb != null}">
+                <a href="/members/login" th:href="@{'/members/login'}">
+                    <i>Login</i>
+                </a>
+                <a href="/members/register" th:href="@{'/members/register'}">
+                    <i>Resister</i>
+                </a>
+            </div>
     </nav>
 </div>
 <div th:fragment="footer">
