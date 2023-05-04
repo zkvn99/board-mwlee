@@ -2,14 +2,20 @@ package idusw.springboot.boradmwlee.service;
 
 import idusw.springboot.boradmwlee.domain.Member;
 import idusw.springboot.boradmwlee.domain.Memo;
+import idusw.springboot.boradmwlee.domain.PageRequestDTO;
+import idusw.springboot.boradmwlee.domain.PageResultDTO;
 import idusw.springboot.boradmwlee.entity.MemberEntity;
 import idusw.springboot.boradmwlee.entity.MemoEntity;
 import idusw.springboot.boradmwlee.repository.MemberRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -60,6 +66,9 @@ public class MemberServiceImpl implements MemberService {
                     .seq(e.getSeq())
                     .email(e.getEmail())
                     .name(e.getName())
+                    .pw(e.getPw())
+                    .regDate(e.getRegDate())
+                    .modDate(e.getModDate())
                     .build();
             result.add(m);// DTO (Data Transfer Object) : Controller - Service or Controller - View
             /*
@@ -74,12 +83,25 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public int update(Member m) {
-        return 0;
+        MemberEntity entity = MemberEntity.builder()
+                .seq(m.getSeq())
+                .email(m.getEmail())
+                .name(m.getName())
+                .pw(m.getPw())
+                .build();
+        if(memberRepository.save(entity) != null) // 저장 성공
+            return 1;
+        else
+            return 0;
     }
 
     @Override
     public int delete(Member m) {
-        return 0;
+        MemberEntity entity = MemberEntity.builder()
+                .seq(m.getSeq())
+                .build();
+        memberRepository.deleteById(entity.getSeq());
+        return 1;
     }
 
     @Override
@@ -91,8 +113,16 @@ public class MemberServiceImpl implements MemberService {
             result.setSeq(entity.getSeq());
             result.setEmail(entity.getEmail());
             result.setName(entity.getName());
-            result.setPw(entity.getPw());
         }
         return result;
+    }
+
+    @Override
+    public PageResultDTO<Member, MemberEntity> getList(PageRequestDTO requestDTO) {
+        Pageable pageable = requestDTO.getPageable(Sort.by("seq"));
+        Page<MemberEntity> result = memberRepository.findAll(pageable);
+        Function<MemberEntity, Member> fn = (entity -> entityToDto(entity));
+
+        return new PageResultDTO<>(result, fn);
     }
 }

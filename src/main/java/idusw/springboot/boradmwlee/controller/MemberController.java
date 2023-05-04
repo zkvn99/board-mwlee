@@ -1,6 +1,9 @@
 package idusw.springboot.boradmwlee.controller;
 
 import idusw.springboot.boradmwlee.domain.Member;
+import idusw.springboot.boradmwlee.domain.PageRequestDTO;
+import idusw.springboot.boradmwlee.domain.PageResultDTO;
+import idusw.springboot.boradmwlee.entity.MemberEntity;
 import idusw.springboot.boradmwlee.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -53,11 +56,23 @@ public class MemberController {
         List<Member> memberList = new ArrayList<>(); // 결과를 받을 객체
         if((memberList = memberService.readList()) != null) {
             model.addAttribute("list", memberList);
-            return "/members/list";
+            return "members/list";
         } else {
             model.addAttribute("error message", "목록 조회에 실패, 권한 확인");
             return "/members/message";
         }
+    }
+
+    @GetMapping(value = {"/pn/{pn}"})
+    public String listMemberByPageNumber(@PathVariable("pn") int pn, Model model) {
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(pn).size(10).build();
+        PageResultDTO<Member, MemberEntity> resultDTO = memberService.getList(pageRequestDTO);
+        List<Member> result = resultDTO.getDtoList();
+        if(result != null) {
+            model.addAttribute("list", result);
+            return "/members/list";
+        } else
+            return "/404";
     }
     @GetMapping("/register")
     public String getRegisterForm(Model model) {
@@ -81,4 +96,35 @@ public class MemberController {
         return "/members/forgot-password";
     }
 
+    @GetMapping("/{seq}")
+    public String getMember(@PathVariable("seq") Long seq, Model model) {
+        Member result = new Member(); // 반환
+        Member m= new Member(); // 매개변수로 전달
+        m.setSeq(seq);
+        result = memberService.read(m);
+        // MemberService가 MemberRepository에게 전달
+        // MemberRepository는 JpaRepository 인터페이스의 구현체를 활용할 수 있음
+        model.addAttribute("member", result);
+        return "members/detail";
+    }
+
+    @PutMapping("/{seq}") // @PostMapping("/{seq}/update")
+    public String updateMember(@ModelAttribute("member") Member member, Model model) { // 수정 처리 -> service -> repository -> service -> controller
+        if(memberService.update(member) > 0 ) {
+            session.setAttribute("mb", member);
+            return "redirect:/";
+        }
+        else
+            return "/404";
+    }
+    @DeleteMapping("/{seq}") // @PostMapping("/{seq}/delete")
+    public String deleteMember(@ModelAttribute("member") Member member) { // 삭제 처리 -> service -> repository -> service -> controller
+        if(memberService.delete(member) > 0) {
+            session.invalidate();
+            return "redirect:/";
+        }
+        else
+            return "/404";
+    }
 }
+
