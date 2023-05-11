@@ -49,6 +49,7 @@ public class MemberController {
         session.invalidate(); // session 객체 무효화, 저장된 속성도 사라짐
         return "redirect:/";
     }
+   /*
     @RequestMapping("/")
     public String getMemberList(Model model) {
         // 1. 매개변수를 받아 기본 작업하고, 2. 서비스에게 요청을 전달 - readList() 가 처리 후 반환
@@ -62,18 +63,18 @@ public class MemberController {
             return "/members/message";
         }
     }
-
-    @GetMapping(value = {"/pn/{pn}"})
-    public String listMemberByPageNumber(@PathVariable("pn") int pn, Model model) {
-        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(pn).size(10).build();
+*/
+    @GetMapping(value = {"", "/{pn}/{size}"}) // /?pn=&size=
+    public String listMemberPagination(@PathVariable("pn") int pn, @PathVariable("size") int size, Model model) {
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(pn).size(size).build();
         PageResultDTO<Member, MemberEntity> resultDTO = memberService.getList(pageRequestDTO);
-        List<Member> result = resultDTO.getDtoList();
-        if(result != null) {
-            model.addAttribute("list", result);
+        if(resultDTO != null) {
+            model.addAttribute("result", resultDTO);
             return "/members/list";
         } else
             return "/404";
     }
+
     @GetMapping("/register")
     public String getRegisterForm(Model model) {
         // Member 형의 객체를 생성하고,
