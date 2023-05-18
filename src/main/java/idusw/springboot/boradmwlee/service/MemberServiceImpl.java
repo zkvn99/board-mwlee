@@ -1,11 +1,14 @@
 package idusw.springboot.boradmwlee.service;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import idusw.springboot.boradmwlee.domain.Member;
 import idusw.springboot.boradmwlee.domain.Memo;
 import idusw.springboot.boradmwlee.domain.PageRequestDTO;
 import idusw.springboot.boradmwlee.domain.PageResultDTO;
 import idusw.springboot.boradmwlee.entity.MemberEntity;
 import idusw.springboot.boradmwlee.entity.MemoEntity;
+import idusw.springboot.boradmwlee.entity.QMemberEntity;
 import idusw.springboot.boradmwlee.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -119,10 +122,60 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public PageResultDTO<Member, MemberEntity> getList(PageRequestDTO requestDTO) {
-        Pageable pageable = requestDTO.getPageable(Sort.by("seq"));
-        Page<MemberEntity> result = memberRepository.findAll(pageable);
+        Sort sort = Sort.by("seq").descending();
+        /*
+        if(requestDTO.getSort() == null)
+            sort = Sort.by("seq").descending();
+        else
+            sort = Sort.by("seq").ascending();
+            */
+        Pageable pageable = requestDTO.getPageable(sort);
+        //Page<MemberEntity> result = memberRepository.findAll(pageable);
+        BooleanBuilder booleanBuilder = findByCondition(requestDTO);
+        Page<MemberEntity> result = memberRepository.findAll(booleanBuilder, pageable);
+
         Function<MemberEntity, Member> fn = (entity -> entityToDto(entity));
 
-        return new PageResultDTO<>(result, fn);
+        PageResultDTO pageResultDTO = new PageResultDTO<>(result, fn, requestDTO.getPerPagination());
+        return pageResultDTO;
+    }
+
+    private BooleanBuilder findByCondition(PageRequestDTO pageRequestDTO) {
+
+        String type = pageRequestDTO.getType();
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        QMemberEntity qMemberEntity = QMemberEntity.memberEntity;
+        // 없을 경우 Gradle clean 후 build
+
+        BooleanExpression expression = qMemberEntity.seq.gt(0L); // where seq > 0 and title == "title"
+        booleanBuilder.and(expression);
+
+        if(type == null || type.trim().length() == 0) {
+            return booleanBuilder;
+        }
+
+        String keyword = pageRequestDTO.getKeyword();
+
+        BooleanBuilder conditionBuilder = new BooleanBuilder();
+        if(type.contains("e")) { // email로 검색
+            conditionBuilder.or(qMemberEntity.email.contains(keyword));
+        }
+        if(type.contains("n")) { // name로 검색
+            conditionBuilder.or(qMemberEntity.name.contains(keyword));
+        }
+        /*
+        if(type.contains("p")) { // phone로 검색
+            conditionBuilder.or(qMemberEntity.phone.contains(keyword));
+        }
+        if(type.contains("a")) { // address로 검색
+            conditionBuilder.or(qMemberEntity.address.contains(keyword));
+        } // 조건을 전부 줄 수도 있으니 if else문 아님
+        if(type.contains("l")) {
+            conditionBuilder.or(qMemberEntity.level.contains(keyword));
+        } */
+        booleanBuilder.and(conditionBuilder);
+        return booleanBuilder;
     }
 }
