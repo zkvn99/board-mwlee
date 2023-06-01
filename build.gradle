@@ -32,7 +32,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //testImplementation 'org.springframework.security:spring-security-test'
 
-    // querydsl : jpa로 고급 질의 처리 어려움을 해결, 자바기반 통합 질의 방법
+    // querydsl : jpa로 고급 질의 처리 어려움을 해결, 자바기반 통합 질의 방법 - JPQL, Querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"

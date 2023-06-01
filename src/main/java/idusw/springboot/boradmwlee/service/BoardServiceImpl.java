@@ -1,13 +1,17 @@
 package idusw.springboot.boradmwlee.service;
 
 import idusw.springboot.boradmwlee.domain.Board;
-import idusw.springboot.boradmwlee.domain.Member;
+import idusw.springboot.boradmwlee.domain.PageRequestDTO;
+import idusw.springboot.boradmwlee.domain.PageResultDTO;
 import idusw.springboot.boradmwlee.entity.BoardEntity;
 import idusw.springboot.boradmwlee.entity.MemberEntity;
 import idusw.springboot.boradmwlee.repository.BoardRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -35,9 +39,17 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<Board> findBoardAll() {
-        return null;
+    public PageResultDTO<Board, Object[]> findBoardAll(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable(Sort.by("bno").descending());
+        Page<Object[]> result = boardRepository.searchPage(
+                pageRequestDTO.getType(),
+                pageRequestDTO.getKeyword(),
+                pageRequestDTO.getPageable(Sort.by("bno").descending()));
+        Function<Object[], Board> fn = (entity -> entityToDto((BoardEntity) entity[0],
+                (MemberEntity) entity[1], (Long) entity[2]));
+        return new PageResultDTO<>(result, fn, 5);
     }
+
 
     @Override
     public int updateBoard(Board board) {
