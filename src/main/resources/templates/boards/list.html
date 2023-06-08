@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -41,23 +41,23 @@
             <div class="row">
                 <!-- Blog entries-->
                 <div class="col-lg-8">
-                    <form class="mb-4" th:action="@{'/boards'}" th:method="get"></form>
+                    <form class="mb-4" th:action="@{'/boards'}" th:method="get">
                         <select name="type">
                             <option th:selected="${pageRequestDTO.type == null}">-------</option>
                             <option value="t" th:selected="${pageRequestDTO.type == 't'}">title</option>
                             <option value="c" th:selected="${pageRequestDTO.type == 'c'}">content</option>
                             <option value="w" th:selected="${pageRequestDTO.type == 'w'}">writer</option>
                         </select>
-                        <input type="text" name="keyword" th:value="@{pageRequestDto.keyword}">
+                        <input type="text" name="keyword" th:value="${pageRequestDTO.keyword}">
                         <input type="submit" value="search"/>
                     </form>
                     <!-- Featured blog post-->
-                    <div class="card mb-4">
+                    <div class="card mb-4" th:each="board : ${list.dtoList}">
                         <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
                         <div class="card-body">
                             <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title">Featured Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+                            <h2 class="card-title" th:text="${board.title}"></h2>
+                            <p class="card-text" th:text="${board.content}"></p>
                             <a class="btn btn-primary" href="#!">Read more →</a>
                         </div>
                     </div>
@@ -171,6 +171,6 @@
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
+        <script src="../js/scripts.js"></script>
     </body>
 </html>
