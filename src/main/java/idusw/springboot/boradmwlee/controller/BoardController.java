@@ -3,6 +3,7 @@ package idusw.springboot.boradmwlee.controller;
 import idusw.springboot.boradmwlee.domain.Board;
 import idusw.springboot.boradmwlee.domain.Member;
 import idusw.springboot.boradmwlee.domain.PageRequestDTO;
+import idusw.springboot.boradmwlee.domain.PageResultDTO;
 import idusw.springboot.boradmwlee.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -36,6 +37,7 @@ public class BoardController {
     public String postBoard(@ModelAttribute("board") Board dto, Model model, HttpServletRequest request) {
         session = request.getSession();
         Member member = (Member) session.getAttribute("mb");
+
         if (member != null) {
 // form에서 hidden 전송하는 방식으로 변경
             dto.setWriterSeq(member.getSeq());
@@ -46,25 +48,28 @@ public class BoardController {
 
             return "redirect:/boards"; // 등록 후 목록 보기, redirection, get method
         } else
-            return "redirect:/members/login-form"; // 로그인이 안된 상태인 경우
+            return "redirect:/members/login"; // 로그인이 안된 상태인 경우
     }
 
     @GetMapping("")
-    public String getBoards(PageRequestDTO pageRequestDTO, Model model) { // 중간 본 수정
+    public String getBoards(@ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model) { // 중간 본 수정
         //PageRequestDTO pageRequestDTO1 = PageRequestDTO.builder().build();
-        if(pageRequestDTO == null)
+        PageResultDTO<Board, Object[]> pageResultDTO = boardService.findBoardAll(pageRequestDTO);
+        /*if(pageRequestDTO == null)
             model.addAttribute("pageRequestDTO", PageRequestDTO.builder().build());
         else
-            model.addAttribute("list", boardService.findBoardAll(pageRequestDTO));
+            model.addAttribute("list", boardService.findBoardAll(pageRequestDTO)); */
+        model.addAttribute("list", pageResultDTO);
         return "/boards/list";
     }
 
     @GetMapping("/{bno}")
     public String getBoardByBno(@PathVariable("bno") Long bno, Model model) {
-// Long bno 값을 사용하는 방식을 Board 객체에 bno를 설정하여 사용하는 방식으로 변경
+        // Long bno 값을 사용하는 방식을 Board 객체에 bno를 설정하여 사용하는 방식으로 변경
         Board board = boardService.findBoardById(Board.builder().bno(bno).build());
         boardService.updateBoard(board);
-        model.addAttribute("dto", boardService.findBoardById(board));
+        model.addAttribute("board", board);
+        System.out.println(board);
         return "/boards/detail";
     }
 

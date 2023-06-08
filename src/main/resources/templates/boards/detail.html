@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="../css/styles.css" rel="stylesheet" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -36,7 +37,7 @@
                         <!-- Post header-->
                         <header class="mb-4">
                             <!-- Post title-->
-                            <h1 class="fw-bolder mb-1">Welcome to Blog Post!</h1>
+                            <h1 class="fw-bolder mb-1">[[${board.title}]]</h1>
                             <!-- Post meta content-->
                             <div class="text-muted fst-italic mb-2">Posted on January 1, 2023 by Start Bootstrap</div>
                             <!-- Post categories-->
@@ -47,45 +48,190 @@
                         <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
                         <!-- Post content-->
                         <section class="mb-5">
-                            <p class="fs-5 mb-4">Science is an enterprise that should be cherished as an activity of the free human mind. Because it transforms who we are, how we live, and it gives us an understanding of our place in the universe.</p>
-                            <p class="fs-5 mb-4">The universe is large and old, and the ingredients for life as we know it are everywhere, so there's no reason to think that Earth would be unique in that regard. Whether of not the life became intelligent is a different question, and we'll see if we find that.</p>
-                            <p class="fs-5 mb-4">If you get asteroids about a kilometer in size, those are large enough and carry enough energy into our system to disrupt transportation, communication, the food chains, and that can be a really bad day on Earth.</p>
-                            <h2 class="fw-bolder mb-4 mt-5">I have odd cosmic thoughts every day</h2>
-                            <p class="fs-5 mb-4">For me, the most fascinating interface is Twitter. I have odd cosmic thoughts every day and I realized I could hold them to myself or share them with people who might be interested.</p>
-                            <p class="fs-5 mb-4">Venus has a runaway greenhouse effect. I kind of want to know what happened there because we're twirling knobs here on Earth without knowing the consequences of it. Mars once had running water. It's bone dry today. Something bad happened there as well.</p>
+                            <h2 class="fw-bolder mb-4 mt-5">Content</h2>
+                            <p class="fs-5 mb-4" th:text="${board.content}"></p>
                         </section>
                     </article>
                     <!-- Comments section-->
                     <section class="mb-5">
+                        <button type="button" class="badge bg-secondary btn-warning reply-count">
+                            Reply Count <span class="badge badge-light">[[${board.replyCount}]]</span>
+                        </button>
+                        <button type="button" class="badge bg-secondary addReply">
+                            Reply Register
+                        </button>
+                        <div class="list-group reply-list">
+
+                        </div>
                         <div class="card bg-light">
                             <div class="card-body">
                                 <!-- Comment form-->
-                                <form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
-                                <!-- Comment with nested comments-->
-                                <div class="d-flex mb-4">
-                                    <!-- Parent comment-->
-                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                    <div class="ms-3">
-                                        <div class="fw-bold">Commenter Name</div>
-                                        If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-                                        <!-- Child comment 1-->
-                                        <div class="d-flex mt-4">
-                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                            <div class="ms-3">
-                                                <div class="fw-bold">Commenter Name</div>
-                                                And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+                                <form class="mb-4">
+                                    <textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea>
+                                </form>
+
+                                <div class="modal" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Reply</h5>
+
+                                                <button type="button" class="close btn-reply-close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
                                             </div>
-                                        </div>
-                                        <!-- Child comment 2-->
-                                        <div class="d-flex mt-4">
-                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                            <div class="ms-3">
-                                                <div class="fw-bold">Commenter Name</div>
-                                                When you put money directly to a problem, it makes a good headline.
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <input class="form-control"  type="text" name="reply-text" placeholder="Reply Text...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input class="form-control"  type="text" name="replier" placeholder="Replier">
+                                                    <input type="hidden" name="rno" >
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger btn-reply-remove">Remove</button>
+                                                <button type="button" class="btn btn-warning btn-reply-modify">Modify</button>
+                                                <button type="button" class="btn btn-primary btn-reply-save">Save</button>
+                                                <button type="button" class="btn btn-outline-secondary btn-reply-close" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <script>
+                                    $(document).ready(function(e) {
+                                        var bno = [[${board.bno}]];
+                                        //댓글이 추가될 영역
+                                        var listGroup  = $(".reply-list");
+                                        //모달 창
+                                        var modal = $('.modal');
+
+                                        //날짜 처리를 위한 함수
+                                        function formatTime(str) {
+                                            var date = new Date(str);
+                                            return date.getFullYear() + '/' +
+                                                (date.getMonth() + 1) + '/' +
+                                                date.getDate() + ' ' +
+                                                date.getHours() + ':' +
+                                                date.getMinutes();
+                                        }
+
+                                        //특정한 게시글의 댓글을 처리하는 함수
+                                        function loadJSONData() {
+                                            $.getJSON('/replies/boards/' + bno, function (arr) {
+                                                console.log(arr);
+                                                var str = "";
+                                                $('.reply-count').html(" Reply Count  " + arr.length);
+                                                $.each(arr, function (idx, reply) {
+                                                    console.log(reply);
+                                                    str += '    <div class="card-body" data-rno="' + reply.rno + '"><b>' + reply.rno + '</b>';
+                                                    str += '    <h5 class="card-title">' + reply.text + '</h5>';
+                                                    str += '    <h6 class="card-subtitle mb-2 text-muted">' + reply.replier + '</h6>';
+                                                    str += '    <p class="card-text">' + formatTime(reply.regDate) + '</p>';
+                                                    str += '    </div><hr>';
+                                                })
+                                                listGroup.html(str);
+                                            });
+                                        }
+
+                                        loadJSONData();
+                                        //$(".reply-count").click(function(){
+                                        //    loadJSONData();
+                                        //})//end click
+
+                                        $(".addReply").click(function () {
+                                            modal.modal('show');
+                                            //댓글 입력하는 부분 초기화 시키기
+                                            $('input[name="reply-text"]').val('');
+                                            $('input[name="replyier"]').val('');
+                                            $(".modal-footer .btn").hide(); //모달 내의 모든 버튼을 안 보이도록
+                                            $(".btn-reply-save, .btn-reply-close").show(); //필요한 버튼들만 보이도록
+                                        });
+
+                                        $(".btn-reply-save").click(function() {
+                                            var reply = {
+                                                bno: bno,
+                                                text: $('input[name="reply-text"]').val(),
+                                                replier: $('input[name="replier"]').val()
+                                            }
+                                            console.log(reply);
+                                            $.ajax({
+                                                url: '/replies/',
+                                                method: 'post',
+                                                data:  JSON.stringify(reply),
+                                                contentType: 'application/json; charset=utf-8',
+                                                dataType: 'json',
+                                                success: function(data){
+                                                    console.log(data);
+                                                    alert(newRno +"번 댓글이 등록되었습니다.")
+                                                }
+                                            })
+                                            modal.modal('hide');
+                                            self.location.reload();
+                                        });
+
+                                        $('.reply-list').on("click", ".card-body", function() {
+                                            var rno = $(this).data("rno");
+
+                                            $("input[name='reply-text']").val( $(this).find('.card-title').html());
+                                            $("input[name='replier']").val( $(this).find('.card-subtitle').html());
+                                            $("input[name='rno']").val(rno);
+
+                                            $(".modal-footer .btn").hide();
+                                            $(".btn-reply-remove, .btn-reply-modify, .btn-reply-close").show();
+
+                                            modal.modal('show');
+                                        });
+
+                                        $(".btn-reply-remove").on("click", function(){
+                                            var rno = $("input[name='rno']").val(); //모달 창에 보이는 댓글 번호 hidden처리되어 있음
+                                            $.ajax({
+                                                url: '/replies/' + rno,
+                                                method: 'delete',
+                                                success: function(result){
+                                                    console.log("result: " + result);
+                                                    if(result ==='success'){
+                                                        alert("댓글이 삭제되었습니다");
+                                                    }
+                                                }
+                                            })
+                                            modal.modal('hide');
+                                            self.location.reload();
+                                        });
+
+                                        $(".btn-reply-modify").click(function() {
+                                            var rno = $("input[name='rno']").val();
+
+                                            var reply = {
+                                                rno: rno,
+                                                bno: bno,
+                                                text: $('input[name="reply-text"]').val(),
+                                                replier: $('input[name="replier"]').val()
+                                            }
+                                            console.log(reply);
+                                            $.ajax({
+                                                url: '/replies/' + rno,
+                                                method: 'put',
+                                                data:  JSON.stringify(reply),
+                                                contentType: 'application/json; charset=utf-8',
+                                                success: function(result){
+                                                    console.log("RESULT: " + result);
+                                                    if(result ==='success'){
+                                                        alert("댓글이 수정되었습니다");
+                                                    }
+                                                }
+                                            });
+                                            modal.modal('hide');
+                                            self.location.reload();
+                                        });
+
+                                        $(".btn-reply-close").click(function() {
+                                            modal.modal('hide');
+                                            self.location.reload();
+                                        });
+                                    });
+                                </script>
                                 <!-- Single comment-->
                                 <div class="d-flex">
                                     <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
@@ -144,9 +290,12 @@
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
         </footer>
+
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+
+
     </body>
 </html>

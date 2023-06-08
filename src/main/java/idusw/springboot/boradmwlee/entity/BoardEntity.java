@@ -23,7 +23,7 @@ public class BoardEntity extends BaseEntity{
     @Column(length = 1000, nullable = false)
     private String content;
 
-    @ManyToOne
-    //@JoinColumn(name = "seq")
+    @ManyToOne(fetch = FetchType.LAZY) // EAGER로 할 경우 메모리 낭비
+    // @JoinColumn(MemberEntitY)
     private MemberEntity writer; // N:1 연관 관계 지정 : 작성자 1명 : 게시물 다수
 }

@@ -47,10 +47,9 @@ public class SearchBoardRepositoryImpl extends QuerydslRepositorySupport impleme
         JPQLQuery<BoardEntity> jpqlQeury = from(boardEntity);
         jpqlQeury.leftJoin(memberEntity).on(boardEntity.writer.eq(memberEntity));
         jpqlQeury.leftJoin(replyEntity).on(replyEntity.board.eq(boardEntity));
+        // select b, w from BoardEntity b left join b.writer w on b.writer = w;
 
-// select b, w from BoardEntity b left join b.writer w on b.writer = w;
-
-// select b, w, count(r) from BoardEntity b left join b.writer w left join ReplyEntity r on r.board = b;
+        // select b, w, count(r) from BoardEntity b left join b.writer w left join ReplyEntity r on r.board = b;
         JPQLQuery<Tuple> tuple = jpqlQeury.select(boardEntity, memberEntity, replyEntity.count());
         //JPQLQuery<Tuple> tuple = jpqlQeury.select(boardEntity, memberEntity);
 
@@ -90,7 +89,7 @@ public class SearchBoardRepositoryImpl extends QuerydslRepositorySupport impleme
             tuple.orderBy(new OrderSpecifier(direction, orderByExpression.get(prop)));
         });
 
-        tuple.groupBy(boardEntity, memberEntity);
+        tuple.groupBy(boardEntity, memberEntity); // Oracle -> MariaDB, Mysql 보다 sql문법 엄격함
 
 // page 처리
         tuple.offset(pageable.getOffset()); // 시작 레코드 vs 현재 페이지를 사용하지는 않음

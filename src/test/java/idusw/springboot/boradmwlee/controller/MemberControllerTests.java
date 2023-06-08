@@ -6,6 +6,7 @@ import idusw.springboot.boradmwlee.domain.PageResultDTO;
 import idusw.springboot.boradmwlee.entity.MemberEntity;
 import idusw.springboot.boradmwlee.repository.MemberRepository;
 import idusw.springboot.boradmwlee.service.MemberService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,6 +40,18 @@ public class MemberControllerTests {
                     .build();
             memberRepository.save(member);
         });
+    }
+
+    @Test
+    @Transactional // could not initialize proxy - no Session : Lazy fetch로 인한 오류
+    void readMember() {
+        Member member = new Member();
+        member.setSeq(51L);
+        Member result = null;
+        if((result = memberService.read(member)) != null)
+            System.out.println("조회 성공" + result.getEmail() + ":::" + result.getName());
+        else
+            System.out.println("조회 실패");
     }
 
     @Test

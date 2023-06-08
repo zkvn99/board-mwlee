@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long>,
-        QuerydslPredicateExecutor<MemberEntity> {
+        QuerydslPredicateExecutor<MemberEntity> { // Join 사용안해서 Sort Page Search 간단하게 해결
     //JPQL
     @Transactional
     @Query("select m from MemberEntity m where m.email = :email and m.pw = :pw")

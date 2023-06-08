@@ -23,6 +23,9 @@ public class Board { // 5 fields
     private String writerEmail;
     private String writerName;
 
+    //reply
+    private Long replyCount;
+
     // auditing
     private LocalDateTime regDate;
     private LocalDateTime modDate;
