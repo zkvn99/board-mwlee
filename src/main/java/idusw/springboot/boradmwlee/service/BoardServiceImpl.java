@@ -64,7 +64,6 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public int updateBoard(Board board) {
         BoardEntity entity = BoardEntity.builder()
-                .bno(board.getBno())
                 .title(board.getTitle())
                 .content(board.getTitle())
                 .build();
