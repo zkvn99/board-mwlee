@@ -64,8 +64,10 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public int updateBoard(Board board) {
         BoardEntity entity = BoardEntity.builder()
+                .bno(board.getBno())
                 .title(board.getTitle())
-                .content(board.getTitle())
+                .content(board.getContent())
+                .writer(boardRepository.findById(board.getBno()).get().getWriter())
                 .build();
         if(boardRepository.save(entity) != null) // 저장 성공
             return 1;

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Controller
 @RequestMapping("/boards")
 public class BoardController {
@@ -54,12 +57,12 @@ public class BoardController {
     @GetMapping("")
     public String getBoards(@ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model) { // 중간 본 수정
         //PageRequestDTO pageRequestDTO1 = PageRequestDTO.builder().build();
-        PageResultDTO<Board, Object[]> pageResultDTO = boardService.findBoardAll(pageRequestDTO);
-        /*if(pageRequestDTO == null)
+        //PageResultDTO<Board, Object[]> pageResultDTO = boardService.findBoardAll(pageRequestDTO);
+        if(pageRequestDTO == null)
             model.addAttribute("pageRequestDTO", PageRequestDTO.builder().build());
         else
-            model.addAttribute("list", boardService.findBoardAll(pageRequestDTO)); */
-        model.addAttribute("list", pageResultDTO);
+            model.addAttribute("list", boardService.findBoardAll(pageRequestDTO));
+        //model.addAttribute("list", pageResultDTO);
         return "/boards/list";
     }
 
@@ -74,14 +77,31 @@ public class BoardController {
     }
 
     @GetMapping("/{bno}/up-form")
-    public String getUpForm(@PathVariable("bno") Long bno, Model model) {
-        Board board = boardService.findBoardById(Board.builder().bno(bno).build());
+    public String getUpForm(@PathVariable("bno") Long bno, Model model, HttpServletRequest request) {
+        /*Board board = boardService.findBoardById(Board.builder().bno(bno).build());
         model.addAttribute("board", board);
-        return "/boards/upform";
+        return "/boards/up-form";*/
+        session = request.getSession();
+        Member member = (Member) session.getAttribute("mb");
+
+        if (member == null) {
+            // 로그인이 되어있지 않은 경우 처리
+            return "redirect:/members/login";
+        }
+
+        Board board = boardService.findBoardById(Board.builder().bno(bno).build());
+
+        if (member.getSeq().equals(board.getWriterSeq())) {
+            model.addAttribute("board", Board.builder().build());
+            return "/boards/up-form";
+        } else {
+            return "redirect:/boards";
+        } // 작성자가 일치하지 않을 경우
     }
 
-    @PutMapping("/{bno}")
+    @PutMapping("/{bno}/update")
     public String putBoard(@ModelAttribute("board") Board board, Model model) {
+
         boardService.updateBoard(board);
         model.addAttribute(boardService.findBoardById(board));
         return "redirect:/boards/" + board.getBno();
@@ -94,7 +114,7 @@ public class BoardController {
         return "/boards/del-form";
     }
 
-    @DeleteMapping("/{bno}")
+    @DeleteMapping("/{bno}/delete")
     public String deleteBoard(@ModelAttribute("board") Board board, Model model) {
         boardService.deleteBoard(board);
         model.addAttribute(board);

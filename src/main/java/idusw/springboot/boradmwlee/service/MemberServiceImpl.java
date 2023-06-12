@@ -87,7 +87,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public int update(Member m) {
         MemberEntity entity = MemberEntity.builder()
-                .seq(m.getSeq())
                 .email(m.getEmail())
                 .name(m.getName())
                 .pw(m.getPw())
@@ -138,6 +137,11 @@ public class MemberServiceImpl implements MemberService {
 
         PageResultDTO pageResultDTO = new PageResultDTO<>(result, fn, requestDTO.getPerPagination());
         return pageResultDTO;
+    }
+
+    @Override
+    public boolean isEmailDuplicated(String email) {
+        return memberRepository.existsByEmail(email);
     }
 
     private BooleanBuilder findByCondition(PageRequestDTO pageRequestDTO) {

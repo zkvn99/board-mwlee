@@ -98,11 +98,18 @@ public class MemberController {
     }
     @PostMapping("/register")
     public String registerMember(@ModelAttribute("member") Member m, Model model) {
-        if(memberService.create(m) > 0 )
-            return "redirect:/members/login"; // 홈으로 재지정함 : 컨트롤러에게 재지정
-        else
-            return "redirect:/members/register";
+        if (memberService.isEmailDuplicated(m.getEmail())) {
+            // 중복 이메일이 존재하는 경우
+            model.addAttribute("errorMessage", "중복된 이메일입니다. 다른 이메일을 사용해주세요.");
+            return "/members/register";
+        } else {
+            if (memberService.create(m) > 0)
+                return "redirect:/members/login"; // 회원가입이 성공한 경우 로그인 페이지로 리다이렉트
+            else
+                return "redirect:/members/register";
+        }
     }
+
     //@RequestMapping(value ="/forgot", method = RequestMethod.GET)
 
     @GetMapping("/forgot")

@@ -33,7 +33,6 @@ public class MemberControllerTests {
         // Integer 데이터 흐름, Lambda 식 - 함수형 언어의 특징을 활용
         IntStream.rangeClosed(1, 101).forEach(i -> {
             MemberEntity member = MemberEntity.builder()
-                    .seq(Long.valueOf(i))
                     .email("email" + i + "@induk.ac.kr")
                     .pw("pw" + i)
                     .name("name" + i)

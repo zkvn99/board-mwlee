@@ -17,7 +17,7 @@ public class HomeController {
     // /admin/index view에게 전달
     @GetMapping("/")
     public String getAdmin() {
-        return "/admin/index";
+        return "redirect:/boards";
     }
 
 }

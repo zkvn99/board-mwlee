@@ -31,7 +31,7 @@ public interface BoardService {
         return entity;
     }
 
-    default Board entityToDto(BoardEntity entity, MemberEntity memberEntity, Long replyCount) { // entity 객체를 dto 객체로 변환 : service -> controller
+    default Board entityToDto(BoardEntity entity, MemberEntity memberEntity, Long replyCount) { // entity 객체를 dto 객체로 변환 : service -> controllerb
         Board dto = Board.builder()
                 .bno(entity.getBno())
                 .title(entity.getTitle())
