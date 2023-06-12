@@ -20,7 +20,13 @@ public class Member {
     private String email;
     private String name;
     private String pw;
+    private String phone;
+    private boolean abandon = false;
 
     private LocalDateTime regDate;
     private LocalDateTime modDate;
+
+    public void memberBan() {
+        this.abandon = true;
+    }
 }

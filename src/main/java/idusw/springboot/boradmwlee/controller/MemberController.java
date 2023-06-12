@@ -73,20 +73,27 @@ public class MemberController {
                                        @RequestParam(value = "perPagination", required = false, defaultValue = "5") int perPagination,
                                        @RequestParam(value = "type", required = false, defaultValue = "e") String type,
                                        @RequestParam(value = "keyword", required = false, defaultValue = "@") String keyword,
-                                       Model model) {
-        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
-                .page(page)
-                .perPage(perPage)
-                .perPagination(perPagination)
-                .type(type)
-                .keyword(keyword)
-                .build();
-        PageResultDTO<Member, MemberEntity> resultDTO = memberService.getList(pageRequestDTO);
-        if(resultDTO != null) {
-            model.addAttribute("result", resultDTO);
-            return "/members/list"; // view : template engine - thymeleaf .html
-        } else
-            return "/404";
+                                       Model model, HttpServletRequest request) {
+        session = request.getSession();
+        Member member = (Member) session.getAttribute("mb");
+        if(member.getEmail().equals("root201912012@induk.ac.kr"))
+        {
+            PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                    .page(page)
+                    .perPage(perPage)
+                    .perPagination(perPagination)
+                    .type(type)
+                    .keyword(keyword)
+                    .build();
+            PageResultDTO<Member, MemberEntity> resultDTO = memberService.getList(pageRequestDTO);
+            if(resultDTO != null) {
+                model.addAttribute("result", resultDTO);
+                return "/members/list"; // view : template engine - thymeleaf .html
+            } else
+                return "/404";
+        }
+        else
+            return "redirect:/";
     }
 
     @GetMapping("/register")

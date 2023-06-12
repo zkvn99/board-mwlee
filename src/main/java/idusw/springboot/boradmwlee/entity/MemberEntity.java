@@ -28,6 +28,11 @@ public class MemberEntity extends BaseEntity{
     private String name;
     @Column(length = 20, nullable = false)
     private String pw;
+    @Column(length = 20, nullable = false)
+    private String phone;
+
+    @Column(name = "abandon")
+    private boolean abandon;
 
     // nextval => 새로운 번호 (값 증가)
     // currval => 번호 읽기

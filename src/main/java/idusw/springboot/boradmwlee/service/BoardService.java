@@ -18,6 +18,8 @@ public interface BoardService {
 
     int deleteBoard(Board board); // 게시물의 ID 값만
 
+    int boardLike(Board board);
+
     default BoardEntity dtoToEntity(Board dto) { // dto객체를 entity 객체로 변환 : service -> repository
         MemberEntity member = MemberEntity.builder()
                 .seq(dto.getWriterSeq())
@@ -27,6 +29,7 @@ public interface BoardService {
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .writer(member)
+                .boardLike(dto.getBoardLike())
                 .build();
         return entity;
     }
@@ -42,6 +45,7 @@ public interface BoardService {
                 .replyCount(replyCount)
                 .regDate(entity.getRegDate())
                 .modDate(entity.getModDate())
+                .boardLike(entity.getBoardLike())
                 .build();
         return dto;
     }

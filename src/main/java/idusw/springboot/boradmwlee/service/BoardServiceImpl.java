@@ -82,4 +82,9 @@ public class BoardServiceImpl implements BoardService{
         boardRepository.deleteById(board.getBno()); // 게시물 삭제
         return 0;
     }
+
+    @Override
+    public int boardLike(Board board) {
+        return 0;
+    }
 }

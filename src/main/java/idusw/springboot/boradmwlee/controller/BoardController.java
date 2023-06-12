@@ -55,14 +55,29 @@ public class BoardController {
     }
 
     @GetMapping("")
-    public String getBoards(@ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model) { // 중간 본 수정
+    public String getBoards(@RequestParam(value="page", required = false, defaultValue = "1") int page,
+                            @RequestParam(value="perPage", required = false, defaultValue = "8") int perPage,
+                            @RequestParam(value="perPagination", required = false, defaultValue = "5") int perPagination,
+                            @RequestParam(value="type", required = false, defaultValue = "e") String type,
+                            @RequestParam(value="keyword", required = false, defaultValue = "") String keyword, Model model) {
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .page(page)
+                .perPage(perPage)
+                .perPagination(perPagination)
+                .type(type)
+                .keyword(keyword)
+                .build();
+
         //PageRequestDTO pageRequestDTO1 = PageRequestDTO.builder().build();
-        //PageResultDTO<Board, Object[]> pageResultDTO = boardService.findBoardAll(pageRequestDTO);
-        if(pageRequestDTO == null)
+        PageResultDTO<Board, Object[]> pageResultDTO = boardService.findBoardAll(pageRequestDTO);
+        /*if(pageRequestDTO == null)
             model.addAttribute("pageRequestDTO", PageRequestDTO.builder().build());
-        else
+        else{
             model.addAttribute("list", boardService.findBoardAll(pageRequestDTO));
-        //model.addAttribute("list", pageResultDTO);
+            model.addAttribute("keyword", keyword);
+        }*/
+        model.addAttribute("list", pageResultDTO);
         return "/boards/list";
     }
 

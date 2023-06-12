@@ -30,12 +30,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public int create(Member m) {
         // DTO -> Entity : Repository에서 처리하기 위해
-        MemberEntity entity = MemberEntity.builder()
-                .seq(m.getSeq())
-                .email(m.getEmail())
-                .name(m.getName())
-                .pw(m.getPw())
-                .build();
+        MemberEntity entity = dtoToEntity(m);
         //MemberEntity entity = new MemberEntity(m.getSeq(), m.getEmail(), m.getName(), m.getPw())
         if(memberRepository.save(entity) != null) // 저장 성공
             return 1;
@@ -51,6 +46,7 @@ public class MemberServiceImpl implements MemberService {
                 .email(e.getEmail())
                 .name(e.getName())
                 .pw(e.getPw())
+                .phone(e.getPhone())
                 .build();
         return member;
     }
@@ -72,6 +68,7 @@ public class MemberServiceImpl implements MemberService {
                     .pw(e.getPw())
                     .regDate(e.getRegDate())
                     .modDate(e.getModDate())
+                    .phone(e.getPhone())
                     .build();
             result.add(m);// DTO (Data Transfer Object) : Controller - Service or Controller - View
             /*
@@ -90,6 +87,7 @@ public class MemberServiceImpl implements MemberService {
                 .email(m.getEmail())
                 .name(m.getName())
                 .pw(m.getPw())
+                .phone(m.getPhone())
                 .build();
         if(memberRepository.save(entity) != null) // 저장 성공
             return 1;
