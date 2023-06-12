@@ -1,5 +1,6 @@
 package idusw.springboot.boradmwlee.service;
 
+import idusw.springboot.boradmwlee.domain.Board;
 import idusw.springboot.boradmwlee.domain.Member;
 import idusw.springboot.boradmwlee.domain.PageRequestDTO;
 import idusw.springboot.boradmwlee.domain.PageResultDTO;
@@ -14,6 +15,10 @@ public interface MemberService {
     int update(Member m);
     int delete(Member m);
     Member login(Member m);
+
+    Member findById(Long id);
+
+    void banMember(Long id);
 
     // java 1.8 : 인터페이스가 기본 메소드를 가질 수 있도록 함.
     PageResultDTO<Member, MemberEntity> getList(PageRequestDTO requestDTO);
@@ -44,4 +49,6 @@ public interface MemberService {
                 .build();
         return dto;
     }
+
+    int checkEmail(Member member);
 }

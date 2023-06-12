@@ -9,6 +9,8 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long>,
         QuerydslPredicateExecutor<MemberEntity> { // Join 사용안해서 Sort Page Search 간단하게 해결
@@ -20,4 +22,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long>,
     // JPA 사양서를 구현한 구현체에 대한 인터페이스
     // 'org.springframework.boot:spring-boot-starter-data-jpa' : spring-data-jpa 라이브러리에 포함
     boolean existsByEmail(String email);
+
+    List<MemberEntity> getMemberEntitiesByEmail(@Param("email") String email);
 }

@@ -3,6 +3,18 @@
 
 <head>
 
+    <script th:inline="javascript">
+        function showAlert(message) {
+            alert(message);
+        }
+        var showAlertFlag = /*[[${alert}]]*/ false;
+        var message = /*[[${message}]]*/ '';
+        if (showAlertFlag && message) {
+            showAlert(message);
+        }
+    </script>
+
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

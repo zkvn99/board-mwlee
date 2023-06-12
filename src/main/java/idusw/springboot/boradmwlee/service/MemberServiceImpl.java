@@ -113,8 +113,15 @@ public class MemberServiceImpl implements MemberService {
             result.setSeq(entity.getSeq());
             result.setEmail(entity.getEmail());
             result.setName(entity.getName());
+            result.setAbandon(entity.isAbandon());
         }
         return result;
+    }
+
+    @Override
+    public Member findById(Long id) {
+        MemberEntity entitySeq = memberRepository.findById(id).orElse(null);
+        return entityToDto(entitySeq);
     }
 
     @Override
@@ -142,6 +149,15 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByEmail(email);
     }
 
+    @Override
+    public int checkEmail(Member member) {
+        List<MemberEntity> memberEntityList = memberRepository.getMemberEntitiesByEmail(member.getEmail());
+        if(memberEntityList.size() > 0)
+            return 1;
+        else
+            return 0;
+    }
+
     private BooleanBuilder findByCondition(PageRequestDTO pageRequestDTO) {
 
         String type = pageRequestDTO.getType();
@@ -167,10 +183,11 @@ public class MemberServiceImpl implements MemberService {
         if(type.contains("n")) { // name로 검색
             conditionBuilder.or(qMemberEntity.name.contains(keyword));
         }
-        /*
+
         if(type.contains("p")) { // phone로 검색
             conditionBuilder.or(qMemberEntity.phone.contains(keyword));
         }
+        /*
         if(type.contains("a")) { // address로 검색
             conditionBuilder.or(qMemberEntity.address.contains(keyword));
         } // 조건을 전부 줄 수도 있으니 if else문 아님
@@ -179,5 +196,18 @@ public class MemberServiceImpl implements MemberService {
         } */
         booleanBuilder.and(conditionBuilder);
         return booleanBuilder;
+    }
+
+    @Override
+    public void banMember(Long id) {
+        MemberEntity entitySeq = memberRepository.findById(id).orElse(null);
+        if (entitySeq != null) {
+            if (entitySeq.isAbandon()) {
+                entitySeq.setAbandon(false);
+            } else {
+                entitySeq.setAbandon(true);
+            }
+            memberRepository.save(entitySeq);
+        }
     }
 }

@@ -35,14 +35,21 @@ public class MemberController {
     @PostMapping("/login")
     public String loginMember(@ModelAttribute("member") Member m, Model model, HttpServletRequest request) {
        // @ModelAttribute : 요청으로 전달된 객체 (폼에서 입력한 정보를 갖는) , email, pw
-        Member result = null;
-        if((result = memberService.login(m)) != null) {
-            session = request.getSession();
-            session.setAttribute("mb", result);
-            return "redirect:/"; // 재지정(redirection)
-        }
-        else
+        Member result = memberService.login(m);
+        if (result != null) {
+            if (!result.isAbandon()) {
+                session = request.getSession();
+                session.setAttribute("mb", result);
+                return "redirect:/"; // 로그인 성공 시 메인 페이지로 리다이렉트
+            } else {
+                String message = "정지된 아이디입니다.";
+                model.addAttribute("message", message);
+                model.addAttribute("alert", true); // 알림 창을 표시하기 위한 플래그 추가
+                return "/members/login"; // 로그인 페이지로 이동
+            }
+        } else {
             return "redirect:/members/register";
+        }
     }
     @GetMapping("/logout")
     public String logoutMember() {
@@ -76,6 +83,8 @@ public class MemberController {
                                        Model model, HttpServletRequest request) {
         session = request.getSession();
         Member member = (Member) session.getAttribute("mb");
+        if(member == null)
+            return "/404";
         if(member.getEmail().equals("root201912012@induk.ac.kr"))
         {
             PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
@@ -136,6 +145,12 @@ public class MemberController {
         model.addAttribute("member", result);
         return "members/detail";
     }
+    @PostMapping("/{seq}/ban")
+    public String banMember(@PathVariable("seq") Long seq) {
+        memberService.banMember(seq);
+        return "redirect:/members";
+    }
+
 
     @PutMapping("/{seq}") // @PostMapping("/{seq}/update")
     public String updateMember(@ModelAttribute("member") Member member, Model model) { // 수정 처리 -> service -> repository -> service -> controller
@@ -155,5 +170,15 @@ public class MemberController {
         else
             return "/404";
     }
+
+    @PostMapping("/check-email")
+    @ResponseBody
+    public int checkEmail(@RequestParam("email") String email) {
+        Member member = Member.builder().email(email).build();
+        int cnt = memberService.checkEmail(member);
+        System.out.println("check-email" + email + " : " + cnt);
+        return cnt;
+    }
+
 }
 

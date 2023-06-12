@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -30,16 +30,42 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
-                            <form class="user" th:action="@{'/members/register'}", th:object="${member}" th:method="post">
+                           <script>
+                                function checkEmail() {
+                                    var email = $('#exampleInputEmail').val(); // email id 값 일치하는 경우 저장
+                                    $.ajax({
+                                        url:'/members/check-email', // controller 주소
+                                        type:'post',
+                                        data:{email:email},
+                                        success:function (cnt){
+                                            if(cnt == 0){
+                                                $('.email_ok').css("display","inline-block");
+                                                $('.email_already').css("display", "none");
+                                            } else {
+                                                $('.email_already').css("display", "inline-block");
+                                                $('.email_ok').css("display","none");
+                                            }
+                                        },
+                                        error:function(){
+                                            alert("에러입니다");
+                                        }
+                                    });
+                                };
+                            </script>
+                            <form class="user" th:action="@{'/members/register'}" th:object="${member}" th:method="post">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" name="name" th:field="*{name}" class="form-control form-control-user" id="exampleFirstName"
-                                            placeholder="Name">
+                                        <input type="email" name="email" th:field="*{email}" class="form-control form-control-user" id="exampleInputEmail"
+                                               placeholder="Email Address" oninput="checkEmail()">
                                     </div>
+                                    <div class="col-sm-6">
+                                              <span class="email_ok">ok : 사용 가능 </span>
+                                              <span class="email_already"> check : 사용 불가능 </span>
+                                         </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" name="email" th:field="*{email}" class="form-control form-control-user" id="exampleInputEmail"
-                                        placeholder="Email Address">
+                                    <input type="text" name="name" th:field="*{name}" class="form-control form-control-user" id="exampleFirstName"
+                                           placeholder="Name">
                                 </div>
                                 <div class="form-group">
                                     <input type="phone" name="phone" th:field="*{phone}" class="form-control form-control-user" id="exampleInputPhone"
@@ -72,7 +98,7 @@
                                 <a class="small" href="forgot-password.html">Forgot Password?</a>
                             </div>
                             <div class="text-center">
-                                <a class="small" href="login.html">Already have an account? Login!</a>
+                                <a class="small" href="../members/login">Already have an account? Login!</a>
                             </div>
                         </div>
                     </div>
