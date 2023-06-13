@@ -84,6 +84,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public int update(Member m) {
         MemberEntity entity = MemberEntity.builder()
+                .seq(m.getSeq())
                 .email(m.getEmail())
                 .name(m.getName())
                 .pw(m.getPw())
