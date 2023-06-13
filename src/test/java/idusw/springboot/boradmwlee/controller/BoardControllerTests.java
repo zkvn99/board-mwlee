@@ -22,17 +22,22 @@ public class BoardControllerTests {
 
     @Test
     void registerBoard() {
-        Board board = Board.builder()
-                .bno(1L)
-                .title("title")
-                .content("content")
-                .writerSeq(1L)
-                .writerEmail("minwook@induk.ac.kr")
-                .writerName("m")
-                .build();
-        if(boardService.registerBoard(board) > 0)
-            System.out.println("등록 성공");
-        else
-            System.out.println("등록 실패");
+        IntStream.rangeClosed(1, 100)
+                .forEach(i -> {
+                    Board board = Board.builder()
+                            .bno((long) i+10)
+                            .title("title" + i)
+                            .content("content" + i)
+                            .writerSeq(1L)
+                            .writerEmail("root201912012@induk.ac.kr")
+                            .writerName("m")
+                            .boardLike(0L)
+                            .build();
+                    if (boardService.registerBoard(board) > 0) {
+                        System.out.println("등록 성공: " + i);
+                    } else {
+                        System.out.println("등록 실패: " + i);
+                    }
+                });
     }
 }

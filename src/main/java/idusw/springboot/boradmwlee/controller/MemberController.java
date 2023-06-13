@@ -48,7 +48,7 @@ public class MemberController {
                 return "/members/login"; // 로그인 페이지로 이동
             }
         } else {
-            return "redirect:/members/register";
+            return "redirect:/members/login";
         }
     }
     @GetMapping("/logout")

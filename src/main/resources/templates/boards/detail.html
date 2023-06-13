@@ -29,7 +29,7 @@
                             <div class="text-muted fst-italic mb-2">Posted on [[${board.regDate}]] by [[${board.writerEmail}]]</div></div>
                             <!-- Post categories-->
                             <a th:href="@{${board.bno} + '/up-form'}" class="badge bg-secondary text-decoration-none link-light" th:if="${member != null && member.seq == board.getWriterSeq()}">수정</a>
-                            <form class="board" th:action="@{${bno}+'/delete'}" th:object="${board}" th:method="delete" th:if="${member != null && member.seq == board.getWriterSeq()}">
+                            <form class="board" th:action="@{${bno}+'/delete'}" th:object="${board}" th:method="delete" th:if="${member != null && (member.getEmail() == 'root201912012@induk.ac.kr' || member.seq == board.getWriterSeq())}">
                                 <input type="submit" value="삭제" />
                             </form>
                             <!-- 좋아요 버튼 -->
