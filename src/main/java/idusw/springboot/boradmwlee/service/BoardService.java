@@ -18,8 +18,9 @@ public interface BoardService {
 
     int deleteBoard(Board board); // 게시물의 ID 값만
 
-    int boardLike(Board board);
+    int increaseLikesCount(Long bno, Long seq);
 
+    boolean checkBoardLikeStatus(Long boardId, Long memberId);
     default BoardEntity dtoToEntity(Board dto) { // dto객체를 entity 객체로 변환 : service -> repository
         MemberEntity member = MemberEntity.builder()
                 .seq(dto.getWriterSeq())

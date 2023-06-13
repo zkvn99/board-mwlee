@@ -231,7 +231,7 @@
                                                     <td>[[${member.phone}]]</td>
                                                     <td><form th:action="@{'/members/' + ${member.seq} + '/ban'}" method="post">
                                                         <input type="hidden" name="seq" th:value="${member.seq}">
-                                                        <button type="submit" class="btn btn-block btn-sm" th:text="${member.abandon ? '해제' : '차단'} "></button>
+                                                        <button type="submit" class="btn btn-block btn-sm" th:text="${member.abandon ? '해제' : '정지'} "></button>
                                                     </form></td>
                                                     <td>[[${member.regDate}]]</td>
                                                     <td>[[${member.modDate}]]</td>

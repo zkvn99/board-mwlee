@@ -28,10 +28,18 @@
                             <!-- Post meta content-->
                             <div class="text-muted fst-italic mb-2">Posted on [[${board.regDate}]] by [[${board.writerEmail}]]</div></div>
                             <!-- Post categories-->
-                            <a th:href="@{${board.bno} + '/up-form'}" class="badge bg-secondary text-decoration-none link-light">수정</a>
-                            <form class="board" th:action="@{${bno}+'/delete'}" th:object="${board}" th:method="delete">
+                            <a th:href="@{${board.bno} + '/up-form'}" class="badge bg-secondary text-decoration-none link-light" th:if="${member != null && member.seq == board.getWriterSeq()}">수정</a>
+                            <form class="board" th:action="@{${bno}+'/delete'}" th:object="${board}" th:method="delete" th:if="${member != null && member.seq == board.getWriterSeq()}">
                                 <input type="submit" value="삭제" />
                             </form>
+                            <!-- 좋아요 버튼 -->
+                            <form th:action="@{/boards/{bno}/like(bno=${bno})}" method="post" th:if="${member != null}">
+                                <input type="submit" value="좋아요" th:if="${not boardLikeStatus}" />
+                                <input type="submit" value="좋아요 취소" th:if="${boardLikeStatus}" />
+                            </form>
+
+                            <h1 class="fw-bolder mb-1">좋아요 수 : [[${board.boardLike}]]</h1>
+
                         </header>
                         <!-- Preview image figure-->
                         <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>

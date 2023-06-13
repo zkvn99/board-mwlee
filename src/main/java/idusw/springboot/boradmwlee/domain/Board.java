@@ -31,5 +31,5 @@ public class Board { // 5 fields
     private LocalDateTime modDate;
 
     //like
-    private Integer boardLike;
+    private Long boardLike;
 }

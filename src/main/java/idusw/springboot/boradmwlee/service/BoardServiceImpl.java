@@ -4,8 +4,11 @@ import idusw.springboot.boradmwlee.domain.Board;
 import idusw.springboot.boradmwlee.domain.PageRequestDTO;
 import idusw.springboot.boradmwlee.domain.PageResultDTO;
 import idusw.springboot.boradmwlee.entity.BoardEntity;
+import idusw.springboot.boradmwlee.entity.BoardLikeEntity;
 import idusw.springboot.boradmwlee.entity.MemberEntity;
 import idusw.springboot.boradmwlee.repository.BoardRepository;
+import idusw.springboot.boradmwlee.repository.BoardLikeRepository;
+import idusw.springboot.boradmwlee.repository.MemberRepository;
 import idusw.springboot.boradmwlee.repository.ReplyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,8 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository; // RequiredArgConstructor 사용 시 final
     private final ReplyRepository replyRepository;
+    private final BoardLikeRepository boardLikeRepository;
+    private final MemberRepository memberRepository;
 
     /* RequiredArgConstructor가 해주는 코드
     public BoardServiceImpl(BoardRepository boardRepository, ReplyRepository replyRepository){
@@ -68,6 +73,7 @@ public class BoardServiceImpl implements BoardService{
                 .title(board.getTitle())
                 .content(board.getContent())
                 .writer(boardRepository.findById(board.getBno()).get().getWriter())
+                .boardLike(board.getBoardLike())
                 .build();
         if(boardRepository.save(entity) != null) // 저장 성공
             return 1;
@@ -84,7 +90,44 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public int boardLike(Board board) {
-        return 0;
+    public int increaseLikesCount(Long boardId, Long memberId) {
+        BoardEntity boardEntity = boardRepository.findById(boardId).orElse(null);
+        MemberEntity memberEntity = memberRepository.findById(memberId).orElse(null);
+
+        if (boardEntity != null && memberEntity != null) {
+            BoardLikeEntity likeEntity = boardLikeRepository.findBySeqAndBno(memberEntity, boardEntity);
+
+            if (likeEntity != null) {
+                boardEntity.setBoardLike(boardEntity.getBoardLike() - 1L); // 좋아요 개수 감소
+                boardRepository.save(boardEntity); // 게시물 엔티티 저장
+                boardLikeRepository.delete(likeEntity); // 좋아요 엔티티 삭제
+            } else {
+                likeEntity = BoardLikeEntity.builder()
+                        .seq(memberEntity)
+                        .bno(boardEntity)
+                        .build();
+                boardEntity.setBoardLike(boardEntity.getBoardLike() + 1L); // 좋아요 개수 증가
+                boardRepository.save(boardEntity); // 게시물 엔티티 저장
+                boardLikeRepository.save(likeEntity); // 좋아요 엔티티 저장
+            }
+
+            return 1; // 좋아요 증가 또는 감소 성공
+        } else {
+            return 0; // 게시물이나 회원을 찾을 수 없음
+        }
     }
+
+    @Override
+    public boolean checkBoardLikeStatus(Long boardId, Long memberId) {
+        BoardEntity boardEntity = boardRepository.findById(boardId).orElse(null);
+        MemberEntity memberEntity = memberRepository.findById(memberId).orElse(null);
+
+        if (boardEntity != null && memberEntity != null) {
+            BoardLikeEntity likeEntity = boardLikeRepository.findBySeqAndBno(memberEntity, boardEntity);
+            return likeEntity != null; // 좋아요 상태 여부 반환
+        }
+
+        return false; // 게시물이나 회원을 찾을 수 없음
+    }
+
 }

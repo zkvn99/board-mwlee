@@ -46,6 +46,7 @@ public class BoardController {
             dto.setWriterSeq(member.getSeq());
             dto.setWriterEmail(member.getEmail());
             dto.setWriterName(member.getName());
+            dto.setBoardLike(0L);
 
             Long bno = Long.valueOf(boardService.registerBoard(dto));
 
@@ -82,12 +83,20 @@ public class BoardController {
     }
 
     @GetMapping("/{bno}")
-    public String getBoardByBno(@PathVariable("bno") Long bno, Model model) {
+    public String getBoardByBno(@PathVariable("bno") Long bno, Model model, HttpServletRequest request) {
         // Long bno 값을 사용하는 방식을 Board 객체에 bno를 설정하여 사용하는 방식으로 변경
         Board board = boardService.findBoardById(Board.builder().bno(bno).build());
+
+        session = request.getSession();
+        Member member = (Member) session.getAttribute("mb");
+        model.addAttribute("member", member);
         boardService.updateBoard(board);
         model.addAttribute("board", board);
-        System.out.println(board);
+        System.out.println(board.getWriterSeq());
+        if (member != null) {
+            boolean boardLikeStatus = boardService.checkBoardLikeStatus(bno, member.getSeq());
+            model.addAttribute("boardLikeStatus", boardLikeStatus);
+        }
         return "/boards/detail";
     }
 
@@ -142,6 +151,21 @@ public class BoardController {
         if (boardService.registerBoard(board) > 0) // 정상적으로 레코드의 변화가 발생하는 경우 영향받는 레코드 수를 반환
             return "redirect:/boards";
         else
-            return "/errors/404"; // 게시물 등록 예외 처리
+            return "/404"; // 게시물 등록 예외 처리
+    }
+
+    @PostMapping("/{bno}/like")
+    public String boardLike(@PathVariable("bno") Long bno, HttpServletRequest request) {
+        session = request.getSession();
+        Member member = (Member) session.getAttribute("mb");
+        if (member == null){
+            return "redirect:/members/login";
+        }
+        int result = boardService.increaseLikesCount(bno, member.getSeq());
+        if (result == 1) {
+            return "redirect:/boards/" + bno;
+        }
+        else
+            return "/404";
     }
 }
