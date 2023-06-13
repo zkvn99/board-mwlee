@@ -99,12 +99,12 @@ public class BoardController {
         }
         return "/boards/detail";
     }
-
+/*
     @GetMapping("/{bno}/up-form")
     public String getUpForm(@PathVariable("bno") Long bno, Model model, HttpServletRequest request) {
-        /*Board board = boardService.findBoardById(Board.builder().bno(bno).build());
+        Board board = boardService.findBoardById(Board.builder().bno(bno).build());
         model.addAttribute("board", board);
-        return "/boards/up-form";*/
+        return "/boards/up-form";
         session = request.getSession();
         Member member = (Member) session.getAttribute("mb");
 
@@ -117,6 +117,32 @@ public class BoardController {
 
         if (member.getSeq().equals(board.getWriterSeq())) {
             model.addAttribute("board", Board.builder().build());
+            return "/boards/up-form";
+        } else {
+            return "redirect:/boards";
+        } // 작성자가 일치하지 않을 경우
+    } */
+
+    @GetMapping("/{bno}/up-form")
+    public String getUpForm(@PathVariable("bno") Long bno, Model model, HttpServletRequest request) {
+        session = request.getSession();
+        Member member = (Member) session.getAttribute("mb");
+
+        if (member == null) {
+            // 로그인이 되어있지 않은 경우 처리
+            return "redirect:/members/login";
+        }
+
+        Board existingBoard = boardService.findBoardById(Board.builder().bno(bno).build());
+
+        if (member.getSeq().equals(existingBoard.getWriterSeq())) {
+            Board board = Board.builder()
+                    .bno(existingBoard.getBno())
+                    .title(existingBoard.getTitle())
+                    .content(existingBoard.getContent())
+                    .build();
+
+            model.addAttribute("board", board);
             return "/boards/up-form";
         } else {
             return "redirect:/boards";

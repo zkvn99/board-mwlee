@@ -24,7 +24,7 @@ public class BoardEntity extends BaseEntity{
     private String content;
 
     @Column(nullable = false)
-    private Long boardLike = 0L;
+    private Long boardLike;
 
     @ManyToOne(fetch = FetchType.LAZY) // EAGER로 할 경우 메모리 낭비
     // @JoinColumn(MemberEntitY)

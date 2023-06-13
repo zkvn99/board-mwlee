@@ -21,7 +21,7 @@ public class Member {
     private String name;
     private String pw;
     private String phone;
-    private boolean abandon = false;
+    private boolean abandon;
 
     private LocalDateTime regDate;
     private LocalDateTime modDate;

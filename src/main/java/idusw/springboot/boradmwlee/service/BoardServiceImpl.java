@@ -85,6 +85,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public int deleteBoard(Board board) {
         replyRepository.deleteByBno(board.getBno()); // 댓글 삭제
+        boardLikeRepository.deleteByBno(dtoToEntity(board));
         boardRepository.deleteById(board.getBno()); // 게시물 삭제
         return 0;
     }
