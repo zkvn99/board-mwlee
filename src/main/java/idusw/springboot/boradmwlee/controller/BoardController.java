@@ -140,6 +140,7 @@ public class BoardController {
                     .bno(existingBoard.getBno())
                     .title(existingBoard.getTitle())
                     .content(existingBoard.getContent())
+                    .boardLike(existingBoard.getBoardLike())
                     .build();
 
             model.addAttribute("board", board);

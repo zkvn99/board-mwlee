@@ -43,10 +43,10 @@ public interface BoardService {
                 .writerSeq(memberEntity.getSeq())
                 .writerEmail(memberEntity.getEmail())
                 .writerName(memberEntity.getName())
+                .boardLike(entity.getBoardLike())
                 .replyCount(replyCount)
                 .regDate(entity.getRegDate())
                 .modDate(entity.getModDate())
-                .boardLike(entity.getBoardLike())
                 .build();
         return dto;
     }
