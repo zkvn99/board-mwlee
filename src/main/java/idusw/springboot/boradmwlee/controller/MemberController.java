@@ -128,7 +128,7 @@ public class MemberController {
 
     //@RequestMapping(value ="/forgot", method = RequestMethod.GET)
 
-    @GetMapping("/forgot")
+    @GetMapping("/forgot-password")
     public String getForgotForm() {
         //memberService.toString();
         return "/members/forgot-password";

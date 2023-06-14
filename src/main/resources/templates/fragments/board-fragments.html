@@ -14,7 +14,6 @@
         <li class="nav-item"><a class="nav-link" href="../">Board</a></li>
         <li class="nav-item"><a class="nav-link" href="../members/login">Login</a></li>
         <li class="nav-item"><a class="nav-link" href="../members/register">Register</a></li>
-        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog</a></li>
       </ul>
     </div>
     <div th:if="${session.mb != null}" class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -24,7 +23,6 @@
         <li class="nav-item"><a class="nav-link" href="../boards/reg-form">Register</a></li>
         <li class="nav-item"><a class="nav-link" href="../members/logout">Logout</a></li>
         <li th:if="${session.mb.email eq 'root201912012@induk.ac.kr'}"><a class="nav-link" th:href="@{'/members/'}">MemberList</a></li>
-        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog</a></li>
       </ul>
     </div>
   </div>

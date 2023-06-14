@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>mwlBoard 2 - Register</title>
+
+    <!-- Custom fonts for this template-->
+    <div th:replace="~{/fragments/main-fragments :: head}"></div>
+
+</head>
+
+<body class="bg-gradient-primary">
+
+    <div class="container">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                            </div>
+                           <script>
+                                function checkEmail() {
+                                    var email = $('#exampleInputEmail').val(); // email id 값 일치하는 경우 저장
+                                    $.ajax({
+                                        url:'/members/check-email', // controller 주소
+                                        type:'post',
+                                        data:{email:email},
+                                        success:function (cnt){
+                                            if(cnt == 0){
+                                                $('.email_ok').css("display","inline-block");
+                                                $('.email_already').css("display", "none");
+                                            } else {
+                                                $('.email_already').css("display", "inline-block");
+                                                $('.email_ok').css("display","none");
+                                            }
+                                        },
+                                        error:function(){
+                                            alert("에러입니다");
+                                        }
+                                    });
+                                };
+                            </script>
+                            <form class="user" th:action="@{'/members/register'}" th:object="${member}" th:method="post">
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="email" name="email" th:field="*{email}" class="form-control form-control-user" id="exampleInputEmail"
+                                               placeholder="Email Address" oninput="checkEmail()">
+                                    </div>
+                                    <div class="col-sm-6">
+                                              <span class="email_ok">ok : 사용 가능 </span>
+                                              <span class="email_already"> check : 사용 불가능 </span>
+                                         </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="name" th:field="*{name}" class="form-control form-control-user" id="exampleFirstName"
+                                           placeholder="Name">
+                                </div>
+                                <div class="form-group">
+                                    <input type="phone" name="phone" th:field="*{phone}" class="form-control form-control-user" id="exampleInputPhone"
+                                           placeholder="Phone Number">
+                                </div>
+                                <div th:if="${errorMessage}">
+                                    <p class="error-message" th:text="${errorMessage}"></p>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="password" name="pw" th:field="*{pw}" class="form-control form-control-user"
+                                            id="exampleInputPassword" placeholder="Password">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" class="form-control form-control-user"
+                                            id="exampleRepeatPassword" placeholder="Repeat Password">
+                                    </div>
+                                </div>
+                                <input type="submit" value="Register Account" class="btn btn-primary btn-user btn-block">
+                                <hr>
+                            </form>
+                            <hr>
+                            <div class="text-center">
+                                <a class="small" href="../members/forgot-password">Forgot Password?</a>
+                            </div>
+                            <div class="text-center">
+                                <a class="small" href="../members/login">Already have an account? Login!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <div th:replace="~{/fragments/main-fragments :: tail}"></div>
+
+</body>
+
+</html>

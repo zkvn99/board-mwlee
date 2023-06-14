@@ -28,13 +28,13 @@
                             <!-- Post meta content-->
                             <div class="text-muted fst-italic mb-2">Posted on [[${board.regDate}]] by [[${board.writerEmail}]]</div></div>
                             <!-- Post categories-->
-                            <a th:href="@{${board.bno} + '/up-form'}" class="badge bg-secondary text-decoration-none link-light" th:if="${member != null && member.seq == board.getWriterSeq()}">수정</a>
+                            <a th:href="@{${board.bno} + '/up-form'}" class="btn btn-sm btn-primary" th:if="${member != null && member.seq == board.getWriterSeq()}">수정</a>
                             <form class="board" th:action="@{${bno}+'/delete'}" th:object="${board}" th:method="delete" th:if="${member != null && (member.getEmail() == 'root201912012@induk.ac.kr' || member.seq == board.getWriterSeq())}">
-                                <input type="submit" value="삭제" />
+                                <input type="submit" value="삭제" class="btn btn-primary"/>
                             </form>
                             <!-- 좋아요 버튼 -->
                             <form th:action="@{/boards/{bno}/like(bno=${bno})}" method="post" th:if="${member != null}">
-                                <input type="submit" value="좋아요" th:if="${not boardLikeStatus}" />
+                                <input type="submit" value="좋아요" th:if="${not boardLikeStatus}" class="btn btn-primary" />
                                 <input type="submit" value="좋아요 취소" th:if="${boardLikeStatus}" />
                             </form>
 

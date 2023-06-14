@@ -25,12 +25,12 @@ public class BoardControllerTests {
         IntStream.rangeClosed(1, 100)
                 .forEach(i -> {
                     Board board = Board.builder()
-                            .bno((long) i+10)
+                            .bno((long) 1L)
                             .title("title" + i)
                             .content("content" + i)
                             .writerSeq(1L)
                             .writerEmail("root201912012@induk.ac.kr")
-                            .writerName("m")
+                            .writerName("이민욱")
                             .boardLike(0L)
                             .build();
                     if (boardService.registerBoard(board) > 0) {

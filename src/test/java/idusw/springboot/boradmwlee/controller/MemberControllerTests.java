@@ -36,6 +36,7 @@ public class MemberControllerTests {
                     .email("email" + i + "@induk.ac.kr")
                     .pw("pw" + i)
                     .name("name" + i)
+                    .phone("01050940"+i)
                     .build();
             memberRepository.save(member);
         });
