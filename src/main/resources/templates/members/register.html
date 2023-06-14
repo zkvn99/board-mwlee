@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="email" name="email" th:field="*{email}" class="form-control" id="exampleInputEmail" placeholder="Email">
+          <input type="email" name="email" th:field="*{email}" class="form-control" id="exampleInputEmail" placeholder="Email" oninput="checkEmail()">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -78,7 +78,7 @@
           <span class="email_already"> check : 사용 불가능 </span>
         </div>
         <div class="input-group mb-3">
-          <input type="password" name="pw" th:field="*{pw}" class="form-control" placeholder="Password" oninput="checkEmail()">
+          <input type="password" name="pw" th:field="*{pw}" class="form-control" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
